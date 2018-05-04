@@ -18,11 +18,11 @@
   file:
     path: "{{ kibana_log_dir }}"
     state: directory
-    mode: 0644
+    mode: 0755
     owner: kibana
     group: kibana
   when: kibana_log_dir is defined
-  
+
 - name: Copy Kibana configuration from role's template
   template:
     src: kibana.yml.j2
