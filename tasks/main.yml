@@ -14,11 +14,23 @@
     state: started
     enabled: yes
 
-- name: Copy Kibana configuration.
+- name: Copy Kibana configuration from role's template
   template:
     src: kibana.yml.j2
     dest: "/etc/kibana/kibana.yml"
-    owner: root
-    group: root
+    owner: kibana
+    group: kibana
     mode: 0644
   notify: restart kibana
+  when: kibana_conf_template is not defined
+
+
+- name: Copy Kibana configuration template from playbook
+  template:
+    src:  "{{ playbook_dir }}/templates/{{ kibana_conf_template }}"
+    dest: /etc/kibana/kibana.conf
+    owner: kibana
+    group: kibana
+  when: kibana_conf_template is defined
+  notify: restart kibana
+  
