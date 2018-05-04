@@ -5,7 +5,16 @@
 - include: setup-Debian.yml
   when: ansible_os_family == 'Debian'
 
-- name: Install Kibana.
+- name: Create logging directory
+  file:
+    path: "{{ kibana_log_dir }}"
+    state: directory
+    mode: 0644
+    owner: kibana
+    group: kibana
+  when: kibana_log_dir is defined
+
+- name: Install Kibana
   package: name=kibana state=present
 
 - name: Ensure Kibana is started and enabled at boot.
@@ -24,13 +33,13 @@
   notify: restart kibana
   when: kibana_conf_template is not defined
 
-
 - name: Copy Kibana configuration template from playbook
   template:
     src:  "{{ playbook_dir }}/templates/{{ kibana_conf_template }}"
-    dest: /etc/kibana/kibana.conf
+    dest: /etc/kibana/kibana.yml
     owner: kibana
     group: kibana
   when: kibana_conf_template is defined
   notify: restart kibana
   
+    
